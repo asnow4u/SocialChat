@@ -2,37 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-public class ServerController : MonoBehaviour
+public class ServerController : MonoBehaviourPunCallbacks
 {
 
     void Awake()
     {
-      PhotonNetwork.ConnectUsingSettings("v1.0");
-
+      PhotonNetwork.ConnectUsingSettings();
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public void OnConnectedToMaster()
+    public override void OnConnectedToMaster()
     {
       PhotonNetwork.JoinLobby();
-      Debug.Log("Joining Lobby"); //GOOD
     }
 
-    public void OnJoinedLobby() {
+    public override void OnJoinedLobby() {
       SceneManager.LoadScene("Lobby");
-      Debug.Log("Joined Lobby"); //GOOD
     }
 }
