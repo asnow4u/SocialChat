@@ -6,8 +6,9 @@ using Photon.Pun;
 public class PlayerMovement : MonoBehaviour
 {
 
-    public float speed;
-    public float turnSpeed;
+    [SerializeField] Camera cam;
+    [SerializeField] float speed;
+    [SerializeField] float turnSpeed;
 
     private PhotonView view;
 
@@ -15,6 +16,10 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
       view = GetComponent<PhotonView>();
+
+      if (!view.IsMine) {
+        cam.enabled = false;
+      }
     }
 
     // Update is called once per frame
