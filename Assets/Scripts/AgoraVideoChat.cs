@@ -100,13 +100,10 @@ public class AgoraVideoChat : MonoBehaviour
     private void CreateUserVideoSurface(uint uid, bool local)
     {
 
-        VideoSurface vs = userVideoSurface.GetComponent<VideoSurface>();//AddComponent<VideoSurface>();
+        VideoSurface vs = userVideoSurface.GetComponent<VideoSurface>();
         userVideoSurface.name = uid.ToString();
         userVideoSurface.transform.eulerAngles = new Vector3(-90f, 180f, 0f);
-
-        if (!local){
-          vs.SetForUser(uid);
-        }
+        vs.SetForUser(uid);
 
         Debug.Log("Create user video");
     }
