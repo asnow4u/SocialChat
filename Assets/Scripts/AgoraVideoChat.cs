@@ -63,7 +63,7 @@ public class AgoraVideoChat : MonoBehaviour
         myUid = uid;
 
         Debug.Log("OnJoinChannelSuccessHandler");
-        CreateUserVideoSurface(uid);
+        CreateUserVideoSurface(uid, true);
     }
 
     private void OnUserJoinedHandler(uint uid, int elapsed)
@@ -73,7 +73,7 @@ public class AgoraVideoChat : MonoBehaviour
         }
 
         Debug.Log("OnUserJoinedHandler");
-        CreateUserVideoSurface(uid);
+        CreateUserVideoSurface(uid, false);
     }
 
     private void OnLeaveChannelHandler(RtcStats stats)
@@ -94,36 +94,42 @@ public class AgoraVideoChat : MonoBehaviour
 
         Debug.Log("destroy video object");
         //Destroy video object
-
     }
 
 
-    private void CreateUserVideoSurface(uint uid)
+    private void CreateUserVideoSurface(uint uid, bool local)
     {
-       userVideoSurface.AddComponent<VideoSurface>();
-       userVideoSurface.transform.eulerAngles = new Vector3(-90f, 180f, 0f); //-90, 180, 0 Start at 90, 0, 0
 
-       Debug.Log("Create use video");
+        VideoSurface vs = userVideoSurface.GetComponent<VideoSurface>();//AddComponent<VideoSurface>();
+        userVideoSurface.name = uid.ToString();
+        userVideoSurface.transform.eulerAngles = new Vector3(-90f, 180f, 0f);
+
+        if (!local){
+          vs.SetForUser(uid);
+        }
+
+        Debug.Log("Create user video");
     }
+
 
     private void ClearUserVideoSurface()
     {
-       userVideoSurface.GetComponent<VideoSurface>().SetEnable(false);
+        userVideoSurface.GetComponent<VideoSurface>().SetEnable(false);
     }
 
     private void TerminateAgoraEngine()
     {
-      Debug.Log("Leaving Channel");
+        Debug.Log("Leaving Channel");
 
-      if (mRtcEngine != null) {
-        mRtcEngine.LeaveChannel();
-        mRtcEngine = null;
-        IRtcEngine.Destroy();
+        if (mRtcEngine != null) {
+          mRtcEngine.LeaveChannel();
+          mRtcEngine = null;
+          IRtcEngine.Destroy();
+        }
       }
-    }
 
     private void OnApplicationQuit()
     {
-      TerminateAgoraEngine();
+        TerminateAgoraEngine();
     }
 }
