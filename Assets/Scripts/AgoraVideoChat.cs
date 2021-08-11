@@ -39,14 +39,12 @@ public class AgoraVideoChat : MonoBehaviourPunCallbacks
         //Callback events
         mRtcEngine.OnJoinChannelSuccess += OnJoinChannelSuccessHandler;
         mRtcEngine.OnUserJoined += OnUserJoinedHandler;
-        mRtcEngine.OnLeaveChannel += OnLeaveChannelHandler;
-        mRtcEngine.OnUserOffline += OnUserOfflineHandler;
 
         mRtcEngine.JoinChannel(channel, null, 0);
 
     }
 
-
+    //Set up channel
     private void OnJoinChannelSuccessHandler(string channelName, uint uid, int elapsed)
     {
 
@@ -60,6 +58,7 @@ public class AgoraVideoChat : MonoBehaviourPunCallbacks
         Debug.Log("OnJoinChannelSuccessHandler");
     }
 
+    //User joins the channel
     private void OnUserJoinedHandler(uint uid, int elapsed)
     {
         Debug.Log("User Joined");
@@ -68,7 +67,7 @@ public class AgoraVideoChat : MonoBehaviourPunCallbacks
         StartCoroutine(SetUpJointVideo(uid));
     }
 
-
+    //Async establish video
     private IEnumerator SetUpJointVideo(uint uid) {
 
       int num = userParent.transform.childCount;
@@ -104,29 +103,9 @@ public class AgoraVideoChat : MonoBehaviourPunCallbacks
 
         Debug.Log("OnUserJoinedHandler");
       }
-
     }
 
-
-    private void OnLeaveChannelHandler(RtcStats stats)
-    {
-
-        Debug.Log("destroy video object");
-        //destroy video object
-    }
-
-    private void OnUserOfflineHandler(uint uid, USER_OFFLINE_REASON reason)
-    {
-
-        Debug.Log("destroy video object");
-        //Destroy video object
-    }
-
-    private void ClearUserVideoSurface()
-    {
-        // userVideoPrefab.GetComponent<VideoSurface>().SetEnable(false);
-    }
-
+    //Clean up Agora
     private void TerminateAgoraEngine()
     {
         Debug.Log("Leaving Channel");
@@ -138,8 +117,14 @@ public class AgoraVideoChat : MonoBehaviourPunCallbacks
         }
       }
 
+    //Clean up
     private void OnApplicationQuit()
     {
         TerminateAgoraEngine();
+        if (mRtcEngine != null) {
+          mRtcEngine.LeaveChannel();
+          mRtcEngine = null;
+          IRtcEngine.Destroy();
+        }
     }
 }
